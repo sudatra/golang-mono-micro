@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"golang-mono-micro/pkg/common/cmd"
 	"log"
 	"net/http"
 	"os"
-	"fmt"
-	"context"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -29,7 +31,7 @@ func main() {
 	}()
 
 	<-ctx.Done();
-	log.PrintLn("Closing Orders Microservice");
+	log.Println("Closing Orders Microservice");
 
 	if err := server.Close(); err != nil{
 		panic(err);
