@@ -1,4 +1,4 @@
-package monolith
+package main
 
 import "log"
 
