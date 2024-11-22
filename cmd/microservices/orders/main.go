@@ -18,7 +18,7 @@ func main() {
 	defer closeFn()
 
 	server := &http.Server{
-		Addr: os.Getenv("SHOP_ORDER_SERVICE_BIND_ADDR"),
+		Addr: os.Getenv("SHOP_ORDERS_SERVICE_BIND_ADDR"),
 		Handler: r,
 	}
 
