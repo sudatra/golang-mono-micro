@@ -1,11 +1,12 @@
 package http
 
 import (
+	common_http "golang-mono-micro/pkg/common/http"
+	"golang-mono-micro/pkg/common/price"
+	products_domain "golang-mono-micro/pkg/shop/domain"
 	"net/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	common_http "golang-mono-micro/pkg/common/http"
-	products_domain "golang-mono-micro/pkg/shop/domain"
 )
 
 type productsResource struct {
@@ -17,15 +18,22 @@ type PriceView struct {
 	Currency string `json:"currency"`
 }
 
+type ProductView struct {
+    ID string `json:"id"`
+    Name string `json:"name"`
+    Description string `json:"description"`
+    Price PriceView `json:"price"`
+}
+
 func AddRoutes(router *chi.Mux, repo products_domain.Repository) {
 	resource := productsResource{repo};
 	router.Get("/products/{id}", resource.Get)
 }
 
-func PriceViewFromPrice(p PriceView) PriceView {
+func PriceViewFromPrice(p price.Price) PriceView {
 	return PriceView{
-		p.Cents,
-		p.Currency,
+		Cents: p.Cents(),
+		Currency: p.Currency(),
 	}
 } 
 
