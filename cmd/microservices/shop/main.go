@@ -1,13 +1,11 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"golang-mono-micro/pkg/common/cmd"
 	"log"
 	"net/http"
 	"os"
-
+	shop_infra_product "golang-mono-micro/pkg/shop/infrastructure/products"
 	"github.com/go-chi/chi/v5"
 )
 
