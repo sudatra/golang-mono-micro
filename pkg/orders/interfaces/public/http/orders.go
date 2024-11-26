@@ -5,7 +5,7 @@ import (
 	"golang-mono-micro/pkg/orders/application"
 	"golang-mono-micro/pkg/orders/domain/orders"
 	"net/http"
-	"github.com/google/uuid"
+	"github.com/satori/go.uuid"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 )
@@ -54,10 +54,18 @@ func (o ordersResource) Post(w http.ResponseWriter, r *http.Request) {
 		return;
 	}
 
+	address := application.PlaceOrderCommandAddress{
+		Name: req.Address.Name(),
+		Street: req.Address.Street(),
+		City: req.Address.City(),
+		PostCode: req.Address.PostCode(),
+		Country: req.Address.Country(),
+	}
+
 	cmd := application.PlaceOrderCommand{
-		OrderID: orders.ID(uuid.New().String()),
+		OrderID: orders.ID(uuid.NewV1().String()),
 		ProductID: req.ProductID,
-		Address: application.PlaceOrderCommand(req.Address),
+		Address: application.PlaceOrderCommandAddress(address),
 	}
 
 	if err := o.service.PlaceOrder(cmd); err != nil {
