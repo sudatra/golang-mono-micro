@@ -12,7 +12,7 @@ type Order struct {
 	paid bool
 }
 
-func NewOrder(id ID, product Product, address Address, paid bool) (*Order, error) {
+func NewOrder(id ID, product Product, address Address) (*Order, error) {
 	if len(id) == 0 {
 		return nil, ErrorEmptyOrderID
 	}
