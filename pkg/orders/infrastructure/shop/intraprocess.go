@@ -24,7 +24,7 @@ func OrderProductFromIntraprocess(shopProduct intraprocess.Product) (orders.Prod
 	)
 }
 
-func (i IntraProcessService) ProductByID(id orders.ProductID) (orders.Product, error) {
+func (i IntraProcessService) ProductsByID(id orders.ProductID) (orders.Product, error) {
 	shopProduct, err := i.intraprocessInterface.ProductByID(string(id));
 	if err != nil {
 		return orders.Product{}, errors.New("unable to fetch product by id")

@@ -68,5 +68,10 @@ func createOrderMicroservice()(router *chi.Mux, closeFn func()) {
 	orders_public_http.AddRoutes(r, ordersService, ordersRepo);
 	orders_private_http.AddRoutes(r, ordersService, ordersRepo);
 
-	return r, func() {}
+	return r, func() {
+		err := ordersToPayQueue.Close();
+		if err != nil {
+			log.Printf("cannot close orders queue: %s", err)
+		}
+	}
 }
