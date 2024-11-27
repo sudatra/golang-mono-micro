@@ -17,7 +17,7 @@ type ordersResource struct {
 
 type PostOrderRequest struct {
 	ProductID orders.ProductID `json:"product_id"`
-	Address orders.Address `json:"address"`
+	Address PostOrderAddress `json:"address"`
 }
 
 type PostOrderAddress struct {
@@ -54,18 +54,10 @@ func (o ordersResource) Post(w http.ResponseWriter, r *http.Request) {
 		return;
 	}
 
-	address := application.PlaceOrderCommandAddress{
-		Name: req.Address.Name(),
-		Street: req.Address.Street(),
-		City: req.Address.City(),
-		PostCode: req.Address.PostCode(),
-		Country: req.Address.Country(),
-	}
-
 	cmd := application.PlaceOrderCommand{
 		OrderID: orders.ID(uuid.NewV1().String()),
 		ProductID: req.ProductID,
-		Address: application.PlaceOrderCommandAddress(address),
+		Address: application.PlaceOrderCommandAddress(req.Address),
 	}
 
 	if err := o.service.PlaceOrder(cmd); err != nil {
