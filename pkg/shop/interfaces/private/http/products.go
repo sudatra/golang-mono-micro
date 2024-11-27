@@ -26,7 +26,7 @@ type ProductView struct {
 }
 
 func AddRoutes(router *chi.Mux, repo products_domain.Repository) {
-	resource := productsResource{repo};
+	resource := productsResource{repo: repo};
 	router.Get("/products/{id}", resource.Get)
 }
 

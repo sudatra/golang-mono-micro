@@ -22,7 +22,7 @@ func (m *MemoryRepository) Save(productToSave *products.Product) error {
 	return nil;
 }
 
-func (m *MemoryRepository) ById(id products.ID) (*products.Product, error) {
+func (m *MemoryRepository) ByID(id products.ID) (*products.Product, error) {
 	for _, p := range m.products{
 		if p.ID() == id {
 			return &p, nil;

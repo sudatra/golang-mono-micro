@@ -6,6 +6,10 @@ import (
 	"net/http"
 	"os"
 	shop_infra_product "golang-mono-micro/pkg/shop/infrastructure/products"
+	shop_interfaces_private_http "golang-mono-micro/pkg/shop/interfaces/private/http"
+	shop_interfaces_public_http "golang-mono-micro/pkg/shop/interfaces/public/http"
+	shop_app "golang-mono-micro/pkg/shop/application"
+	shop "golang-mono-micro/pkg/shop"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -36,6 +40,12 @@ func main() {
 
 func createShopMicroservice()(router *chi.Mux) {
 	shopProductRepo := shop_infra_product.NewMemoryRepository();
+	shopProductsService := shop_app.NewProductsService(shopProductRepo, shopProductRepo);
+
+	if err := shop.LoadShopFixtures(shopProductsService); err != nil {
+		panic(err)
+	}
+
 	r := cmd.CreateRouter();
 
 	shop_interfaces_public_http.AddRoutes(r, shopProductRepo);
