@@ -1,11 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"golang-mono-micro/pkg/common/cmd"
+	orders_app "golang-mono-micro/pkg/orders/application"
+	orders_infra_orders "golang-mono-micro/pkg/orders/infrastructure/orders"
+	orders_infra_payments "golang-mono-micro/pkg/orders/infrastructure/payments"
+	orders_infra_product "golang-mono-micro/pkg/orders/infrastructure/shop"
+	orders_private_http "golang-mono-micro/pkg/orders/interfaces/private/http"
+	orders_public_http "golang-mono-micro/pkg/orders/interfaces/public/http"
 	"log"
 	"net/http"
 	"os"
-	orders_infra_product "golang-mono-micro/pkg/orders/infrastructure/shop"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -40,6 +47,22 @@ func createOrderMicroservice()(router *chi.Mux, closeFn func()) {
 	cmd.WaitForService(os.Getenv("SHOP_RABBITMQ_ADDR"));
 
 	shopHttpClient := orders_infra_product.NewHTTPClient(os.Getenv("SHOP_PRODUCTS_SERVICE_ADDR"));
+	ordersToPayQueue, err := orders_infra_payments.NewAMQPService(
+		fmt.Sprintf("amqp://%s/", os.Getenv("SHOP_RABBITMQ_ADDR")),
+		os.Getenv("SHOP_RABBITMQ_ORDERS_TO_PAY_QUEUE"),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	ordersRepo := orders_infra_orders.NewMemoryRepository();
+	ordersService := orders_app.NewOrdersService(
+		shopHttpClient,
+		ordersToPayQueue,
+		ordersRepo,
+	)
+	
 	r := cmd.CreateRouter();
 
 	orders_public_http.AddRoutes(r, ordersService, ordersRepo);

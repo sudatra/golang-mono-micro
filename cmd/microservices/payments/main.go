@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"golang-mono-micro/pkg/common/cmd"
+	payments_app "golang-mono-micro/pkg/payments/application"
+	payments_infra_orders "golang-mono-micro/pkg/payments/infrastructure/orders"
+	"golang-mono-micro/pkg/payments/interfaces/amqp"
 	"log"
 	"os"
 )
@@ -19,13 +22,13 @@ func main() {
 	}
 }
 
-func createPaymentsMicroservice() amqp.paymentsInterface{
+func createPaymentsMicroservice() amqp.PaymentsInterface {
 	cmd.WaitForService(os.Getenv("SHOP_RABBITMQ_ADDR"));
 
 	paymentsService := payments_app.NewPaymentsService(
-		payments_infra_orders.NewHttpClient(os.Getenv("SHOP_ORDERS_SERVICE_ADDR")),
+		payments_infra_orders.NewHTTPClient(os.Getenv("SHOP_ORDERS_SERVICE_ADDR")),
 	)
-	paymentsInterface, err := amqp.NewPaymentsService(
+	paymentsInterface, err := amqp.NewPaymentsInterface(
 		fmt.Sprintf("amqp://%s/", os.Getenv("SHOP_RABBITMQ_ADDR")),
 		os.Getenv("SHOP_RABBITMQ_ORDERS_TO_PAY_QUEUE"),
 		paymentsService,
