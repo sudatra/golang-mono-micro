@@ -1,13 +1,11 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"golang-mono-micro/pkg/common/cmd"
 	"log"
 	"net/http"
 	"os"
-
+	orders_infra_product "golang-mono-micro/pkg/orders/infrastructure/shop"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -41,7 +39,7 @@ func main() {
 func createOrderMicroservice()(router *chi.Mux, closeFn func()) {
 	cmd.WaitForService(os.Getenv("SHOP_RABBITMQ_ADDR"));
 
-	shopHttpClient := orders_infra_product.NewHttpClient(os.Getenv("SHOP_PRODUCTS_SERVICE_ADDR"));
+	shopHttpClient := orders_infra_product.NewHTTPClient(os.Getenv("SHOP_PRODUCTS_SERVICE_ADDR"));
 	r := cmd.CreateRouter();
 
 	orders_public_http.AddRoutes(r, ordersService, ordersRepo);
